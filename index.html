@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>BBT with Teachable Machine</title>
+        <!-- don't mind these: -->
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- these load the stylesheets: -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Barlow:500" />
+        <link rel="stylesheet" href="./css/reset.css" />
+        <link rel="stylesheet" href="./css/style.css" />
+        <!-- these load the teachable machine libraries: -->
+        <!-- more documentation at https://github.com/googlecreativelab/teachablemachine-libraries -->
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
+        <script src="https://code.jquery.com/jquery-2.2.1.min.js"
+            integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+            crossorigin="anonymous"></script>
+      <script src="https://cdn.glitch.com/9b99dfdc-eb74-4b26-95d1-8c5737d16b80%2Fhtml2canvas.min.js?1518808561925">
+      </script>
+        <script src="https://superal.github.io/canvas2image/canvas2image.js"></script>
+      <!-- these load our code: -->
+        <script type="module" src="./js/model-runner.js"></script>
+        <script type="module" src="./js/bar-graph.js"></script>
+              <!--<script type="module" src="./js/bar-graph2.js"></script>-->
+        <script type="module" src="./js/script2.js"></script>
+      <style>
+div {
+  background-image: url('boxing ring .jpg');
+}
+</style>
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5SB1PXML8L"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-5SB1PXML8L');
+</script>
+    </head>
+    <body>
+        <section id="model">
+            <h1>Let your anger out. Punch your computer virtually! </h1>
+            <!--<h2>Start the camera and get a face in-frame.</h2>-->
+      </section><section>
+      
+        <div class="thing-to-screenshot"><!-- put whatever you want the screenshot of here -->
+          <b>Analysis <span id="num"></span></b><br><br/>
+          <div id="webcam-wrapper"><div id="graph-wrapper"></div>
+              <div class="loader"></div>
+          </div>
+        <!--<video id="cam" autoplay muted playsinline >Not available</video><br>
+          <button id="switchFrontBtn"  >Show face</button> -->
+        </div>      
+        <button type="submit" cursor="pointer">capture the expierience</button>
+      </section>         
+            <!--<button id="cake" onclick="takeScreenShot();show();">Take Screenshot</button></div>
+          <video id="cam" autoplay muted playsinline hidden>Not available</video>
+            <div id="graph-wrapper"></div> 
+<canvas id="fake" style= "display: none" ></canvas>-->
+          <!--<div class="panel">
+        <button id="snapBtn">Snap</button>
+  <button id="switchBackBtn">Other camera (if any)</button>
+  </div>
+    
+  <div class="snapped">
+    <canvas id="canvas" style="display:none"></canvas>  
+  <img id="photo" alt="The snapshot will appear in this box.">
+        
+              </div>   
+          <div id="graph-wrapper2"></div>
+          <!--<div id="graph-wrapper2"></div>-->
+      <section class="canvas-container"></section>
+      <section id="info">
+            <h2>
+               <a href=""></a> 
+                <a href=""></a>
+            </h2>            
+        </section>
+        <!--<footer>
+            <h2>
+                <a href="https://glitch.com/edit/#!/remix/tm-image-demo"
+                    >Remix this site on Glitch</a>
+            </h2>
+        </footer>-->
+
+        <script type="module">
+            import { setupModel } from './js/model-runner.js';
+            import { setupBarGraph, updateBarGraph } from './js/bar-graph.js';
+            //import { setupBarGraph2, updateBarGraph2} from './js/bar-graph2.js';
+          
+            //           _____             .|                      _.._     ,.--.
+            //   _.._    \  __`'.        .' |_      _  __  ___    / .. `.  //    \
+            //  / .. `.   | |-.\ \ .-. .'     |    | |/  `.'  `. / /__\  \ \\    /
+            // / /__\  \  | |   \ ||_|'--.  .-'    |  .-. .-.  '| .-----'`  `'--'
+            //| .-----'`  | |   / |.-.   |  |      | |  | |  | | \ '-...--. ,.--.
+            // \ '-...--. | |_.' /|| |   |  '.'    | |  | |  | |  `. ___.' //    \
+            //  `. ___.' /_____.'/ | |   |   /     |_|  |_|  |_|           \\    /
+            //           \_____|/  |_|   `'-'                               `'--'
+            // train your own model using [TODO_TM2_URL], and replace this URL with your own
+            let URL = 'https://teachablemachine.withgoogle.com/models/YKvs6HUup/';
+            //https://teachablemachine.withgoogle.com/models/1KCXY8-g7/';
+
+            // setupBarGraph is defined in the js/bar-graph.js file
+            setupBarGraph(URL);
+            //setupBarGraph2(URL);
+            // setupModel is defined in the js/model-runner.js file
+            // we pass in another function: updateBarGraph (defined in the js/bar-graph.js file)
+            // setupModel will store the updateBarGraph function,
+            // and call it every time it has new prediction data from the model
+            setupModel(URL, data => {
+                updateBarGraph(data);
+            });
+          //setupModel2(URL, data => {
+                //updateBarGraph2(data);
+            //});
+        </script>
+    </body>
+</html>
+
+
+<script>
+//const canIRun  = navigator.mediaDevices.getDisplayMedia 
+
+const takeScreenShot = async () => {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: { mediaSource: 'screen' },
+      })
+      //const stream = await navigator.mediaDevices.getDisplayMedia({
+        //video: { mediaSource: 'screen' },
+      //})
+      // get correct video track
+      const track = stream.getVideoTracks()[0]
+      // init Image Capture and not Video stream
+      const imageCapture = new ImageCapture(track)
+      // take first frame only
+      const bitmap = await imageCapture.grabFrame()
+      // destory video track to prevent more recording / mem leak
+      track.stop()
+
+      const canvas = document.getElementById('fake') 
+      // this could be a document.createElement('canvas') if you want
+      // draw weird image type to canvas so we can get a useful image
+      canvas.width = bitmap.width
+      canvas.height = bitmap.height
+      const context = canvas.getContext('2d')
+      context.drawImage(bitmap, -160, -130, 1600,900)//bitmap.width, bitmap.height)
+      const image = canvas.toDataURL()
+
+      // this turns the base 64 string to a [File] object
+      const res = await fetch(image)
+      const buff = await res.arrayBuffer()
+      // clone so we can rename, and put into array for easy proccessing
+      const file = [
+        new File([buff], `photo_${new Date()}.jpg`, {
+          type: 'image/jpeg',
+        }),
+      ]
+      return file 
+}     
+
+//const button = document.getElementById('cake').onclick = () => takeScreenShot();
+//const button = document.getElementById('cake').onclick = () => canIRun ? takeScreenShot() : {}
+
+function show() {
+  fake.style.display= "block";
+}
+  
+  var number=0;
+  function counter(){
+    number+=1;
+    document.querySelector("#num").innerHTML = number;
+    }
+    
+$(document).ready(function() {
+  $('button').click(function(event) {
+    html2canvas(document.querySelector('.thing-to-screenshot'),  { letterRendering: 1, allowTaint: true, foreignObjectRendering:false}).then(canvas => {
+      $('.canvas-container').append(canvas);
+    });counter()
+  });
+});
+</script>
